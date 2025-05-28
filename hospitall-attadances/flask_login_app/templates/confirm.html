@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+  <div class="welcome-container">
+    <h1>Sankara Danvanthiri Hospital-Attendance</h1>
+    </div>
+    <div class="container">
+        <h2>Confirm Registration</h2>
+        <img src="{{ url_for('static', filename=face_image.split('static/')[-1]) }}" width="200"><br>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>ID:</strong> {{ emp_id }}</p>
+        <p><strong>Phone:</strong> {{ phone }}</p>
+        <form method="POST">
+            <button type="submit">Confirm & Save</button>
+        </form>
+    </div>
+</body>
+</html>

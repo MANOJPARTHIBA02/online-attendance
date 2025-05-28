@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Report</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #eee; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        .app-bar {
+    background-color: #28a745; /* Bootstrap green */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.date-info span {
+    margin: 0 20px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+    <div class="date-info">
+        <span>Now: {{ date }}</span>
+        <span>Time: {{ current_time }}</span>
+        <span>Current Date: {{ current_date }}</span>
+        <span>Current Month: {{ current_month }}</span>
+        <span>Current Year: {{ current_year }}</span>
+    </div>
+</div>
+ <form method="get" action="{{ url_for('report') }}">
+    <label for="date">Select Date:</label>
+    <input type="date" name="date" id="date" value="{{ selected_date }}">
+    <button type="submit">Filter</button>
+</form>
+
+    <h2>Daily Attendance Report (<b>{{ date }}</b>)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Morning</th>
+                <th>Time</th>
+                <th>Evening</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.id }}</td>
+                <td>{{ row.morning }}</td>
+                <td>{{ row.morning_time }}</td>
+                <td>{{ row.evening }}</td>
+                <td>{{ row.evening_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button onclick="window.print()">🖨️ Print Report</button>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mark Attendance by Face</title>
+  <style>
+    #camera-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    video, canvas {
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Mark Attendance</h2>
+  <div id="camera-container">
+    <video id="video" width="320" height="240" autoplay playsinline></video>
+    <br>
+    <button onclick="capture()">📸 Capture & Mark Attendance</button>
+    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+  </div>
+
+  <script>
+    window.onload = function() {
+      startCamera();
+    };
+
+    function startCamera() {
+      const video = document.getElementById('video');
+      const cameraBox = document.getElementById('camera-container');
+      cameraBox.style.display = 'block';
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function(stream) {
+            video.srcObject = stream;
+          })
+          .catch(function(error) {
+            console.error("Camera access denied or not available:", error);
+            alert("Unable to access camera. Please check your browser permissions.");
+          });
+      } else {
+        alert("Your browser does not support camera access.");
+      }
+    }
+
+    function capture() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      alert("📸 Captured image (simulate sending to server)");
+    }
+  </script>
+</body>
+</html>

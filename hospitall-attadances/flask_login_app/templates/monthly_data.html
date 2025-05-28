@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table, th, td { border: 1px solid black; text-align: center; }
+        table { width: 100%; border-collapse: collapse; }
+        .print-btn { margin-top: 10px; }
+        @media print {
+    @page {
+        size: landscape;
+    }
+
+    body {
+        zoom: 90%; /* Adjust zoom to fit more columns */
+    }
+
+    form, .print-btn {
+        display: none; /* Hide form and print button */
+    }
+
+    table, th, td {
+        font-size: 10px; /* Smaller font for fitting */
+    }
+}
+
+.app-bar {
+    background-color: #28a745; /* Bootstrap green */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.date-info span {
+    margin: 0 20px;
+}
+
+
+    </style>
+</head>
+<body>
+<body>
+{% macro format_days(count) %}
+    {% set full_days = count // 2 %}
+    {% set half_day = count % 2 %}
+    {{ full_days }}{% if half_day == 1 %} 1/2{% endif %}
+{% endmacro %}
+
+
+<div class="app-bar">
+    <div class="date-info">
+        <span>Now: {{ date }}</span>
+        <span>Time: {{ current_time }}</span>
+        <span>Current Date: {{ current_date }}</span>
+        <span>Current Month: {{ current_month }}</span>
+        <span>Current Year: {{ current_year }}</span>
+    </div>
+</div>
+
+
+    <h2 class="text-center">Sankara Danvanthiri Hospital - Monthly Attendance</h2>
+
+    <form method="GET" class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Month</label>
+            <select name="month" class="form-select">
+                {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if m == selected_month %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Year</label>
+            <input type="number" name="year" value="{{ selected_year }}" class="form-control" required>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    <div id="print-area" class="mt-4">
+        <table>
+    <thead>
+    <tr>
+        <th rowspan="2">ID</th>
+        <th rowspan="2">Name</th>
+        <th colspan="{{ days_in_month }}">Date</th>
+        <th rowspan="2">Total Present</th>
+        <th rowspan="2">Total Absent</th>
+    </tr>
+    <tr>
+        {% for d in range(1, days_in_month + 1) %}
+            <th>{{ d }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for emp in employees %}
+        <!-- {# Calculate total present and absent counts #}
+        {% set present_count = 0 %}
+        {% set absent_count = 0 %}
+ -->
+        {% for d in range(1, days_in_month + 1) %}
+            {% if emp.attendance[d|string].morning == 'P' %}
+                {% set present_count = present_count + 1 %}
+            {% elif emp.attendance[d|string].morning == 'A' %}
+                {% set absent_count = absent_count + 1 %}
+            {% endif %}
+            {% if emp.attendance[d|string].evening == 'P' %}
+                {% set present_count = present_count + 1 %}
+            {% elif emp.attendance[d|string].evening == 'A' %}
+                {% set absent_count = absent_count + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        {# Function to convert count to days + half day #}
+        <!-- {% macro format_days(count) %}
+            {% set full_days = count // 2 %}
+            {% set half_day = count % 2 %}
+            {{ full_days }}
+            {% if half_day == 1 %} and half day{% endif %}
+        {% endmacro %} -->
+
+        <tr>
+            <td rowspan="2">{{ emp.id }}</td>
+            <td rowspan="2">{{ emp.name }}</td>
+            {% for d in range(1, days_in_month + 1) %}
+                <td>{{ emp.attendance[d|string].morning }}</td>
+            {% endfor %}
+            <td rowspan="2">{{ emp.total_present }}</td>
+            <td rowspan="2">{{ emp.total_absent }}</td>
+
+        </tr>
+        <tr>
+            {% for d in range(1, days_in_month + 1) %}
+                <td>{{ emp.attendance[d|string].evening }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+    </div>
+
+    <button onclick="window.print()" class="btn btn-secondary print-btn">Print</button>
+</div>
+</body>
+</html>

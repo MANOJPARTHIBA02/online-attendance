@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition - Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        video {
+            border: 2px solid #333;
+            margin-top: 20px;
+        }
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>📷 Mark Attendance - Face Recognition</h2>
+    <button onclick="capture()">Capture & Mark</button>
+    <br>
+    <video id="video" width="320" height="240" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <p id="result">Waiting for capture...</p>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const result = document.getElementById('result');
+
+        // Start the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                result.innerText = '❌ Cannot access camera: ' + error;
+            });
+
+        // Capture and send image
+        function capture() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+
+            result.innerText = "⏳ Processing...";
+
+            fetch('/submit_face_capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'image=' + encodeURIComponent(imageData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                result.innerText = data;
+            })
+            .catch(error => {
+                result.innerText = '❌ Error: ' + error;
+            });
+        }
+    </script>
+</body>
+</html>

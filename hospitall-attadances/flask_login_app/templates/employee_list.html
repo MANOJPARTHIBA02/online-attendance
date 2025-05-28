@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+    <h1>Registered Employees</h1>
+    <table border="1">
+        <tr>
+            <th>Emp ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Face</th>
+            <th>Action</th> 
+        </tr>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp[0] }}</td>
+            <td>{{ emp[1] }}</td>
+            <td>{{ emp[2] }}</td>
+            <td>
+    {% if emp[3] %}
+        <img src="{{ url_for('static', filename='dataset/' + emp[0] + '.jpg') }}" width="100" height="100">
+    {% else %}
+        No Image
+    {% endif %}
+</td>
+
+
+<!-- Inside loop -->
+<td>
+    <form action="{{ url_for('delete_employee', emp_id=emp[0]) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this employee?');">
+        <button type="submit">Delete</button>
+    </form>
+</td>
+
+
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

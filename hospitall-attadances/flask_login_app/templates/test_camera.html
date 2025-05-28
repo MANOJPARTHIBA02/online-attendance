@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Camera Test</title></head>
+<body>
+  <video id="video" autoplay width="320" height="240"></video>
+  <script>
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({video: true})
+        .then(stream => {
+          document.getElementById('video').srcObject = stream;
+          console.log('Camera started');
+        })
+        .catch(e => {
+          alert('Camera permission denied or error: ' + e.message);
+        });
+    } else {
+      alert('Camera API not supported');
+    }
+  </script>
+</body>
+</html>

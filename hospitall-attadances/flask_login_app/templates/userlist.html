@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Users List</title></head>
+<body>
+<h2>Registered Users</h2>
+<table border="1">
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>User ID</th><th>password</th></tr>
+    {% for users in users %}
+    <tr>
+        <td>{{ users[0] }}</td>
+        <td>{{ users[1] }}</td>
+        <td>{{ users[2] }}</td>
+        <td>{{ users[3] }}</td>
+        <td>{{ users[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
